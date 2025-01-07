@@ -119,3 +119,9 @@ CREATE TABLE articles (
     FOREIGN KEY (id_user) REFERENCES usersite(id_user) ON DELETE CASCADE,
     FOREIGN KEY (id_theme) REFERENCES themes(id_theme) ON DELETE SET NULL
 );
+
+-- Table tags
+CREATE TABLE tags (
+    id_tag INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL UNIQUE
+);
