@@ -93,3 +93,15 @@ INSERT INTO vehicule (modele, marque, prix_par_jour, disponibilite, id_categorie
 ('Fortuner', 'Toyota', 700, TRUE, 2, 'https://cdni.autocarindia.com/Utils/ImageResizer.ashx?n=http://img.haymarketsac.in/autocarpro/709f4883-7b5d-48a5-8aee-b556afd7e4f4_Fortuner-Leader-white.jpg&w=735&h=490&q=80', 'SUV robuste idéal pour les longs trajets.', 35, 'Gasoil', 2022, 7),
 ('Civic Type R', 'Honda', 900, TRUE, 4, 'https://www.autotecnica.org/wp-content/uploads/2022/07/2023-honda-civic-type-r-rear-view-1024x576.jpg', 'Voiture sportive haute performance.', 12, 'Essence', 2023, 4),
 ('Kwid', 'Renault', 180, TRUE, 1, 'https://imgd.aeplcdn.com/664x374/n/cw/ec/141125/kwid-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80', 'Petite voiture urbaine économique et pratique.', 15, 'Essence', 2022, 5);
+
+
+
+-- Les nouvelles tables pour la version 2 de Drive & Loc
+
+-- Table themes
+CREATE TABLE themes (
+    id_theme INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
