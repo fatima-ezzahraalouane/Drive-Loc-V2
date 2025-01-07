@@ -125,3 +125,13 @@ CREATE TABLE tags (
     id_tag INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(50) NOT NULL UNIQUE
 );
+
+-- Table articles_tags
+CREATE TABLE articles_tags (
+    id_article_tag INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_article INT NOT NULL,
+    id_tag INT NOT NULL,
+    UNIQUE KEY article_tag_unique (id_article, id_tag),
+    FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE,
+    FOREIGN KEY (id_tag) REFERENCES tags(id_tag) ON DELETE CASCADE
+);
