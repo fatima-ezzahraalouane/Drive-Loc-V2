@@ -135,3 +135,14 @@ CREATE TABLE articles_tags (
     FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE,
     FOREIGN KEY (id_tag) REFERENCES tags(id_tag) ON DELETE CASCADE
 );
+
+-- Table commentaires
+CREATE TABLE commentaires (
+    id_commentaire INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    contenu TEXT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_article INT NOT NULL,
+    id_user INT NOT NULL,
+    FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE,
+    FOREIGN KEY (id_user) REFERENCES usersite(id_user) ON DELETE CASCADE
+);
