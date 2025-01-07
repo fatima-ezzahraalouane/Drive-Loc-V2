@@ -105,3 +105,17 @@ CREATE TABLE themes (
     description TEXT
 );
 
+-- Table articles
+CREATE TABLE articles (
+    id_article INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    titre VARCHAR(255) NOT NULL,
+    contenu TEXT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    statut ENUM('en_attente', 'publie', 'rejete') DEFAULT 'en_attente',
+    image_url VARCHAR(255),
+    video_url VARCHAR(255),
+    id_user INT NOT NULL,
+    id_theme INT,
+    FOREIGN KEY (id_user) REFERENCES usersite(id_user) ON DELETE CASCADE,
+    FOREIGN KEY (id_theme) REFERENCES themes(id_theme) ON DELETE SET NULL
+);
