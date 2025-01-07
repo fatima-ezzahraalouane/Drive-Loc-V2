@@ -146,3 +146,15 @@ CREATE TABLE commentaires (
     FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE,
     FOREIGN KEY (id_user) REFERENCES usersite(id_user) ON DELETE CASCADE
 );
+
+-- Table favoris
+CREATE TABLE favoris (
+    id_favori INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL,
+    id_article INT NOT NULL,
+    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY user_article_unique (id_user, id_article),
+    FOREIGN KEY (id_user) REFERENCES usersite(id_user) ON DELETE CASCADE,
+    FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE
+);
+
