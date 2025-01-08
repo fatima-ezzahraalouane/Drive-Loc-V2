@@ -104,6 +104,8 @@ CREATE TABLE themes (
     nom VARCHAR(100) NOT NULL UNIQUE,
     description TEXT
 );
+ALTER TABLE themes
+ADD COLUMN imgUrl varchar(250) NOT null;
 
 -- Table articles
 CREATE TABLE articles (
