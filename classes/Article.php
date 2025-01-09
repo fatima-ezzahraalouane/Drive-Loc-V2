@@ -91,4 +91,6 @@ class Article
         $stmt->bindParam(':id_article', $id);
         return $stmt->execute();
     }
+
+    
 }
