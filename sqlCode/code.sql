@@ -160,3 +160,42 @@ CREATE TABLE favoris (
     FOREIGN KEY (id_article) REFERENCES articles(id_article) ON DELETE CASCADE
 );
 
+
+INSERT INTO themes (nom, description, imgUrl)
+VALUES
+('Conseils de Conduite', 'Découvrez des astuces et recommandations pour une conduite plus sûre et agréable au quotidien.', 'https://images.unsplash.com/photo-1562618817-4c48e063c39a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDU4fHxkcml2aW5nJTIwYWR2aWNlfGVufDB8fHx8MTY2NzU3MzU2Nw&ixlib=rb-4.0.3&q=80&w=2000'),
+('Entretien Automobile', 'Apprenez à entretenir votre véhicule pour prolonger sa durée de vie et éviter les pannes coûteuses.', 'https://www.altersecurite.org/wp-content/uploads/2019/11/entretien-v%C3%A9hicule.jpg'),
+('Sécurité Routière', 'Découvrez les meilleures pratiques et réglementations pour une conduite sécurisée.', 'https://lp-guynemer-dunkerque.fr/wp-content/uploads/securite-routiere-2019-750x500.jpg'),
+('Tendances du Marché', 'Analysez les tendances actuelles du marché automobile et leurs évolutions futures.', 'https://demarchesadministratives.fr/images/actualites/5532/fin-moteur-thermique.jpg');
+
+-- Theme 1
+INSERT INTO articles (titre, contenu, statut, image_url, id_user, id_theme)
+VALUES
+('Comment réduire sa consommation de carburant', 'Découvrez 10 astuces simples pour économiser du carburant et réduire vos dépenses lors de vos trajets quotidiens.', 'publie', 'https://i.lepelerin.com/1400x787/smart/2024/02/05/hausse-du-prix-du-carburant-comment-reduire-sa-con-.jpeg', 2, 1),
+('Les erreurs courantes à éviter en conduite', 'Une liste des erreurs fréquentes que commettent les conducteurs et comment les éviter pour améliorer votre sécurité.', 'publie', 'https://www.welixe.fr/upload/86924-Les-piy-ges-du-Code-de-la-route-Comment-y-viter-les-erreurs-courantes.webp', 3, 1),
+('Adopter une conduite éco-responsable', 'Comprenez les principes de l’éco-conduite et comment réduire votre empreinte écologique sur la route.', 'en_attente', 'https://www.salonautomonaco.com/wp-content/uploads/2022/03/ecoresponsable-voiture-soyez.jpg', 4, 1),
+('Comment rester concentré au volant', 'Des conseils pratiques pour maintenir votre attention et éviter les distractions pendant vos trajets.', 'publie', 'https://www.permis-lausanne.ch/contenu/uploads/2023/08/ameliorer-sa-concentration-au-volant.jpg', 5, 1);
+
+-- Theme 2
+INSERT INTO articles (titre, contenu, statut, image_url, id_user, id_theme)
+VALUES
+('Les étapes pour vérifier la pression des pneus', 'Une vérification régulière des pneus est essentielle pour votre sécurité et vos économies.', 'publie', 'https://ouipneus.ma/blog/wp-content/uploads/2021/11/verifier-la-pression-des-pneus-1024x683.jpg', 4, 2),
+('Quand changer les plaquettes de frein ?', 'Découvrez les signes d’usure des plaquettes de frein et l’importance de les remplacer à temps.', 'publie', 'https://img-4.linternaute.com/49VWOgqNCmFFv6dAAYn23xO3P30=/1500x/smart/0e81851a3743458d99c3dfbbf8472e34/ccmcms-linternaute/10654128.jpg', 2, 2),
+('Les bases de l’entretien moteur', 'Apprenez les vérifications régulières à effectuer pour garder votre moteur en bon état.', 'en_attente', 'https://www.yamaha-motor.eu/content/dam/yme/fr/ymfr/services/2022_YAM_ACC-APP_WORKWEAR_BUSTER_002.jpg', 5, 2),
+('Comment prolonger la durée de vie de votre batterie', 'Des conseils pour maintenir votre batterie en bon état et éviter les pannes.', 'publie', 'https://www.automoto-gp.com/wp-content/uploads/2024/10/1729759285_astuces-pour-prolonger-la-duree-de-votre-batterie-automobile.jpg', 3, 2);
+
+-- Theme 3
+INSERT INTO articles (titre, contenu, statut, image_url, id_user, id_theme)
+VALUES
+('L’importance du port de la ceinture de sécurité', 'Découvrez pourquoi la ceinture de sécurité reste l’un des dispositifs les plus efficaces pour sauver des vies.', 'publie', 'https://i0.wp.com/www.drive-innov.com/wp-content/uploads/2023/04/main-femme-attachant-ceinture-securite-dans-voiture-image-recadree-femme-assise-dans-voiture-mettant-sa-ceinture-securite-concept-conduite-sure.jpg?ssl=1', 5, 3),
+('Les dangers de l’utilisation du téléphone au volant', 'Pourquoi il est essentiel de rester concentré et de ne pas utiliser votre téléphone en conduisant.', 'publie', 'https://www.fondationdelaroute.fr/wp-content/uploads/2021/03/telephone_volant_interdit.jpg', 4, 3),
+('Comment adapter sa vitesse aux conditions météorologiques', 'Apprenez à ajuster votre conduite en cas de pluie, de brouillard ou de neige.', 'en_attente', 'https://www.assuronline.com/wp-content/uploads/2021/06/18013902_l-scaled.jpg', 3, 3),
+('Les règles essentielles pour conduire de nuit', 'Découvrez des conseils pour assurer votre sécurité et celle des autres sur la route la nuit.', 'publie', 'https://media.roole.fr/_next/image?url=https%3A%2F%2Fassets.prod.roole.fr%2Fdata%2Fassets%2Froute_de_nuit_a1b340cc99.jpg&w=3840&q=75', 2, 3);
+
+-- Theme 4
+INSERT INTO articles (titre, contenu, statut, image_url, id_user, id_theme)
+VALUES
+('L’essor des véhicules électriques en 2025', 'Découvrez pourquoi les voitures électriques dominent le marché et les avantages qu’elles offrent.', 'publie', 'https://cdn-s-www.leprogres.fr/images/1D58F605-87DD-4A44-84F2-28CD9E30184D/NW_raw/connaitre-le-prix-du-plein-avant-de-se-brancher-une-mission-impossible-1638368607.jpg', 3, 4),
+('Les tendances en matière de SUV', 'Pourquoi les SUV restent un choix populaire parmi les acheteurs de voitures modernes.', 'en_attente', 'https://cdn.motor1.com/images/mgl/qkkWMG/s1/brabus-900-auf-basis-mercedes-maybach-gls-600-4matic.jpg', 5, 4),
+('L’évolution des technologies automobiles', 'Explorez les innovations technologiques qui redéfinissent l’expérience de conduite.', 'publie', 'https://i0.wp.com/blog.mbadmb.com/wp-content/uploads/2024/11/IMG_2790-edited.webp?resize=1080%2C608&ssl=1', 2, 4),
+('Les voitures autonomes : état des lieux en 2025', 'Un aperçu des avancées dans le domaine des voitures autonomes et des défis restants.', 'publie', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOU9088kAlyVIv9QtqrYWoFcVfjtjRyivgEQ&s', 4, 4);
