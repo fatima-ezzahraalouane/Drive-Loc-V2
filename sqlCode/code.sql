@@ -199,3 +199,48 @@ VALUES
 ('Les tendances en matière de SUV', 'Pourquoi les SUV restent un choix populaire parmi les acheteurs de voitures modernes.', 'en_attente', 'https://cdn.motor1.com/images/mgl/qkkWMG/s1/brabus-900-auf-basis-mercedes-maybach-gls-600-4matic.jpg', 5, 4),
 ('L’évolution des technologies automobiles', 'Explorez les innovations technologiques qui redéfinissent l’expérience de conduite.', 'publie', 'https://i0.wp.com/blog.mbadmb.com/wp-content/uploads/2024/11/IMG_2790-edited.webp?resize=1080%2C608&ssl=1', 2, 4),
 ('Les voitures autonomes : état des lieux en 2025', 'Un aperçu des avancées dans le domaine des voitures autonomes et des défis restants.', 'publie', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOU9088kAlyVIv9QtqrYWoFcVfjtjRyivgEQ&s', 4, 4);
+
+-- Tags
+INSERT INTO tags (nom)
+VALUES
+('Eco-conduite'),
+('Entretien'),
+('Sécurité'),
+('Technologie'),
+('Électrique'),
+('Tendances');
+
+-- Liens pour le thème "Conseils de Conduite" (id_theme = 1)
+INSERT INTO articles_tags (id_article, id_tag)
+VALUES
+(1, 1), -- Réduire consommation de carburant (Eco-conduite)
+(2, 3), -- Erreurs courantes (Sécurité)
+(3, 1), -- Conduite éco-responsable (Eco-conduite)
+(4, 3); -- Concentration au volant (Sécurité)
+
+
+-- Liens pour le thème "Entretien Automobile" (id_theme = 2)
+INSERT INTO articles_tags (id_article, id_tag)
+VALUES
+(5, 2), -- Pression des pneus (Entretien)
+(6, 2), -- Plaquettes de frein (Entretien)
+(7, 2), -- Entretien moteur (Entretien)
+(8, 2); -- Batterie (Entretien)
+
+
+-- Liens pour le thème "Sécurité Routière" (id_theme = 3)
+INSERT INTO articles_tags (id_article, id_tag)
+VALUES
+(9, 3), -- Ceinture de sécurité (Sécurité)
+(10, 3), -- Téléphone au volant (Sécurité)
+(11, 3), -- Vitesse et météo (Sécurité)
+(12, 3); -- Conduite de nuit (Sécurité)
+
+
+-- Liens pour le thème "Tendances du Marché" (id_theme = 4)
+INSERT INTO articles_tags (id_article, id_tag)
+VALUES
+(13, 5), -- Véhicules électriques (Électrique)
+(14, 6), -- SUV (Tendances)
+(15, 4), -- Technologies (Technologie)
+(16, 6); -- Voitures autonomes (Tendances)
