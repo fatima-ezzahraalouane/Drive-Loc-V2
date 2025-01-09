@@ -92,5 +92,13 @@ class Article
         return $stmt->execute();
     }
 
-    
+    public function searchArticles($title)
+    {
+        $query = "SELECT * FROM articles WHERE titre LIKE :title";
+        $stmt = $this->conn->prepare($query);
+        $searchTerm = "%" . $title . "%";
+        $stmt->bindParam(':title', $searchTerm);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
