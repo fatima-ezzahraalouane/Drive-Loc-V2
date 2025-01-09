@@ -39,23 +39,32 @@ class Article
         }
     }
 
-    public function getAllArticles()
+    public function getAllArticlesWithComments()
     {
-        $query = "SELECT a.*, t.nom AS theme_nom 
-                  FROM articles a 
-                  LEFT JOIN themes t ON a.id_theme = t.id_theme";
+        $query = "
+            SELECT a.*, 
+                   t.nom AS theme_nom, 
+                   u.username AS user_name,
+                   (SELECT COUNT(*) 
+                    FROM commentaires c 
+                    WHERE c.id_article = a.id_article) AS comment_count
+            FROM {$this->table} a
+            LEFT JOIN themes t ON a.id_theme = t.id_theme
+            LEFT JOIN usersite u ON a.id_user = u.id_user
+        ";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getArticleById($id)
+    public function getCommentCountByArticleId($id_article)
     {
-        $query = "SELECT * FROM articles WHERE id_article = :id_article";
+        $query = "SELECT COUNT(*) AS comment_count FROM commentaires WHERE id_article = :id_article";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_article', $id);
+        $stmt->bindParam(':id_article', $id_article);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['comment_count'];
     }
 
     public function updateArticle()
@@ -83,4 +92,3 @@ class Article
         return $stmt->execute();
     }
 }
-?>

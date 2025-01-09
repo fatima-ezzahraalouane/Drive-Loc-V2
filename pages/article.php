@@ -156,7 +156,7 @@ $articles = $article->getAllArticlesWithComments();
                             <div class="blog-content rounded-bottom p-4">
                                 <div class="blog-date"><?= date('d M Y', strtotime($a['date_creation'])) ?></div>
                                 <div class="blog-comment my-3">
-                                    <div class="small"><span class="fa fa-user text-primary"></span><span class="ms-2"><?= htmlspecialchars($a['id_user']) ?></span></div>
+                                    <div class="small"><span class="fa fa-user text-primary"></span><span class="ms-2"><?= htmlspecialchars($a['user_name']) ?></span></div>
                                     <div class="small"><span class="fa fa-comment-alt text-primary"></span><span class="ms-2"><?= $a['comment_count'] ?> Comments</span></div>
                                 </div>
                                 <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($a['titre']) ?></a>
