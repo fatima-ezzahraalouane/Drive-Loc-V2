@@ -214,9 +214,10 @@ try {
                     <div class="navbar-nav mx-auto py-0">
                         <a href="accueil.php" class="nav-item nav-link">Accueil</a>
                         <a href="vehicule.php" class="nav-item nav-link active">Véhicule</a>
+                        <a href="blog.php" class="nav-item nav-link">Blog</a>
+                        <a href="article.php" class="nav-item nav-link">Articles</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Service</a>
-                        <a href="blog.html" class="nav-item nav-link">Blog</a>
 
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
@@ -377,7 +378,7 @@ try {
     <!-- Banner End -->
 
     <!-- Footer Start -->
-    <!-- <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
+    <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-md-6 col-lg-6 col-xl-3">
@@ -437,22 +438,25 @@ try {
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
     <!-- Footer End -->
 
     <!-- Copyright Start -->
-    <!-- <div class="container-fluid copyright py-4">
+    <div class="container-fluid copyright py-4">
         <div class="container">
             <div class="row g-4 align-items-center">
                 <div class="col-md-6 text-center text-md-start mb-md-0">
-                    <span class="text-body"><a href="#" class="border-bottom text-white"><i class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right reserved.</span>
+                    <span class="text-body"><a href="#" class="border-bottom text-white"><i class="fas fa-copyright text-light me-2"></i>Div & Loc</a>, Tous droits réservés.</span>
                 </div>
                 <div class="col-md-6 text-center text-md-end text-body">
-                    Designed By <a class="border-bottom text-white" href="https://htmlcodex.com">HTML Codex</a>
+                    <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                    <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                    <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                    Conçu par <a class="border-bottom text-white" href="https://github.com/fatima-ezzahraalouane">Fatima-Ezzahra Alouane</a>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
     <!-- Copyright End -->
 
 

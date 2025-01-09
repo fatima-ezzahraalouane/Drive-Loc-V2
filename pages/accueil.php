@@ -139,9 +139,10 @@ if (isset($_POST['reserver'])) {
                     <div class="navbar-nav mx-auto py-0">
                         <a href="accueil.php" class="nav-item nav-link active">Accueil</a>
                         <a href="vehicule.php" class="nav-item nav-link">Véhicule</a>
+                        <a href="blog.php" class="nav-item nav-link">Blog</a>
+                        <a href="article.php" class="nav-item nav-link">Articles</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Service</a>
-                        <a href="blog.html" class="nav-item nav-link">Blog</a>
 
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
@@ -711,7 +712,7 @@ if (isset($_POST['reserver'])) {
     <!-- Car Steps End -->
 
     <!-- Blog Start -->
-    <div class="container-fluid blog py-5">
+    <!-- <div class="container-fluid blog py-5">
         <div class="container py-5">
             <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
                 <h1 class="display-5 text-capitalize mb-3">Cental<span class="text-primary"> Blog & News</span></h1>
@@ -772,7 +773,7 @@ if (isset($_POST['reserver'])) {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Blog End -->
 
     <!-- Banner Start -->
