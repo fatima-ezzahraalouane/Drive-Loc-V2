@@ -101,4 +101,19 @@ class Article
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function filterArticlesByTags($tag)
+    {
+        $query = "
+            SELECT a.*, t.nom AS theme_nom
+            FROM articles a
+            JOIN themes t ON a.id_theme = t.id_theme
+            WHERE t.nom LIKE :tag
+        ";
+        $stmt = $this->conn->prepare($query);
+        $tagTerm = "%" . $tag . "%";
+        $stmt->bindParam(':tag', $tagTerm);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
