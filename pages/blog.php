@@ -6,9 +6,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 }
 
 require '../config/Database.php';
+require '../classes/Theme.php';
 
 $database = new Database();
 $conn = $database->getConnection();
+
+$theme = new Theme($conn);
+
+$themes = $theme->getAllThemes();
 ?>
 
 
@@ -136,22 +141,22 @@ $conn = $database->getConnection();
         <div class="container py-5">
             <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
                 <h1 class="display-5 text-capitalize mb-3">Blog <span class="text-primary">Drive & Loc</span></h1>
-                <p class="mb-0">Explorez nos articles soigneusement sélectionnés pour enrichir vos expériences de location de voiture</p>
+                <p class="mb-0">Explorez nos thèmes soigneusement sélectionnés pour enrichir vos expériences de location de voiture</p>
             </div>
             <div class="row g-4">
                 <!-- Theme Card 1 -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="blog-item">
-                        <div class="blog-img position-relative">
-                            <img src="../assets/img/137720location-de-voiture-de-luxe-avec-Luxury-Clubb4c9e6-1024x683.png" class="img-fluid rounded-top w-100" alt="Business Theme">
-                            <div class="p-4 position-absolute bottom-0 w-100" >
-                            <!-- style="background: rgba(0,0,0,0.5) -->
-                                <h3 class="text-white mb-0">Luxe</h3>
-                                <!-- <span class="text-light">42 Templates</span> -->
+                <?php foreach ($themes as $t): ?>
+                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="blog-item">
+                            <div class="blog-img position-relative">
+                                <img src="<?= htmlspecialchars($t['imgUrl']) ?>" class="img-fluid rounded-top w-100" alt="Business Theme">
+                                <div class="p-4 position-absolute bottom-0 w-100" style="background: rgba(0,0,0,0.5)";>
+                                    <h3 class="text-white mb-0"><?= htmlspecialchars($t['nom']) ?></h3>
+                                    <!-- <span class="text-light">42 Templates</span> -->
+                                </div>
                             </div>
-                        </div>
-                        <div class="blog-content rounded-bottom p-4 bg-light">
-                            <!-- <div class="d-flex justify-content-between mb-3">
+                            <div class="blog-content rounded-bottom p-4 bg-light">
+                                <!-- <div class="d-flex justify-content-between mb-3">
                             <div class="small">
                                 <span class="fa fa-download text-primary"></span>
                                 <span class="ms-2">1.2k Downloads</span>
@@ -161,74 +166,15 @@ $conn = $database->getConnection();
                                 <span class="ms-2">4.8/5</span>
                             </div>
                         </div> -->
-                            <p class="mb-3">Explorez nos articles dédiés aux voitures de luxe, mettant en avant design élégant, technologies avancées et performances exceptionnelles pour une expérience de conduite prestigieuse.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <!-- <span class="h5 text-primary mb-0">$49</span> -->
-                                <a href="#" class="btn btn-primary rounded-pill px-4">Explorer</a>
+                                <p class="mb-3"><?= htmlspecialchars($t['description']) ?></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- <span class="h5 text-primary mb-0">$49</span> -->
+                                    <a href="#" class="btn btn-primary rounded-pill px-4">Explorer</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Theme Card 2 -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="blog-item">
-                        <div class="blog-img position-relative">
-                            <img src="path/to/your/portfolio-theme.jpg" class="img-fluid rounded-top w-100" alt="Portfolio Theme">
-                            <div class="p-4 position-absolute bottom-0 w-100" style="background: rgba(0,0,0,0.5)">
-                                <h3 class="text-white mb-0">Portfolio</h3>
-                                <span class="text-light">35 Templates</span>
-                            </div>
-                        </div>
-                        <div class="blog-content rounded-bottom p-4 bg-light">
-                            <div class="d-flex justify-content-between mb-3">
-                                <div class="small">
-                                    <span class="fa fa-download text-primary"></span>
-                                    <span class="ms-2">950 Downloads</span>
-                                </div>
-                                <div class="small">
-                                    <span class="fa fa-star text-warning"></span>
-                                    <span class="ms-2">4.9/5</span>
-                                </div>
-                            </div>
-                            <p class="mb-3">Creative portfolio themes designed for artists, photographers, and designers.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="h5 text-primary mb-0">$39</span>
-                                <a href="#" class="btn btn-primary rounded-pill px-4">Preview</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Theme Card 3 -->
-                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="blog-item">
-                        <div class="blog-img position-relative">
-                            <img src="path/to/your/ecommerce-theme.jpg" class="img-fluid rounded-top w-100" alt="E-commerce Theme">
-                            <div class="p-4 position-absolute bottom-0 w-100" style="background: rgba(0,0,0,0.5)">
-                                <h3 class="text-white mb-0">E-commerce</h3>
-                                <span class="text-light">28 Templates</span>
-                            </div>
-                        </div>
-                        <div class="blog-content rounded-bottom p-4 bg-light">
-                            <div class="d-flex justify-content-between mb-3">
-                                <div class="small">
-                                    <span class="fa fa-download text-primary"></span>
-                                    <span class="ms-2">1.5k Downloads</span>
-                                </div>
-                                <div class="small">
-                                    <span class="fa fa-star text-warning"></span>
-                                    <span class="ms-2">4.7/5</span>
-                                </div>
-                            </div>
-                            <p class="mb-3">Complete e-commerce themes with shopping cart, product pages, and checkout flows.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="h5 text-primary mb-0">$59</span>
-                                <a href="#" class="btn btn-primary rounded-pill px-4">Preview</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
