@@ -151,7 +151,7 @@ $themes = $theme->getAllThemes();
                         <div class="blog-item">
                             <div class="blog-img position-relative">
                                 <img src="<?= htmlspecialchars($t['imgUrl']) ?>" class="img-fluid rounded-top w-100" alt="Business Theme">
-                                <div class="p-4 position-absolute bottom-0 w-100" style="background: rgba(0,0,0,0.5)";>
+                                <div class="p-4 position-absolute bottom-0 w-100" style="background: rgba(0,0,0,0.5)" ;>
                                     <h3 class="text-white mb-0"><?= htmlspecialchars($t['nom']) ?></h3>
                                     <!-- <span class="text-light">42 Templates</span> -->
                                 </div>
@@ -170,7 +170,7 @@ $themes = $theme->getAllThemes();
                                 <p class="mb-3"><?= htmlspecialchars($t['description']) ?></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- <span class="h5 text-primary mb-0">$49</span> -->
-                                    <a href="#" class="btn btn-primary rounded-pill px-4">Explorer</a>
+                                    <a href="affi_articles.php?id_theme=<?= $t['id_theme'] ?>" class="btn btn-primary rounded-pill px-4">Explorer</a>
                                 </div>
                             </div>
                         </div>
