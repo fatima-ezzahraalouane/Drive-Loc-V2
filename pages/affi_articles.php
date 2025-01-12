@@ -32,22 +32,28 @@ $tags = $tag->getAllTags();
 $theme = new Theme($conn);
 $themes = $theme->getAllThemes();
 
-if (isset($_POST["ajoutNArticel"])) {
-    if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['image_url']) && !empty($_POST['id_theme']) && !empty($_POST['id_tag'])) {
+if (isset($_POST["ajoutNArticle"])) {
+    echo "<pre>";
+    print_r($_POST);
+    echo "</pre>";
+    if (!empty($_POST['titre']) && !empty($_POST['contenu']) && !empty($_POST['id_theme']) && !empty($_POST['id_tag']) && is_array($_POST['id_tag'])) {
+        $id_user = $_SESSION['user_id'];
         $article->titre = $_POST['titre'];
         $article->contenu = $_POST['contenu'];
         $article->image_url = $_POST['image_url'];
+        // $article->statut = $_POST['statut'];
         $article->id_theme = intval($_POST['id_theme']);
-        // $article->id_tag = intval($_POST['id_tag']);
+        // Get tags as an array
+        $tags = array_map('intval', $_POST['id_tag']);
 
-        if ($article->createArticle()) {
+        if ($article->createArticleWithTags($tags)) {
             header("Location: blog.php");
             exit();
         } else {
-            echo "Erreur lors de l'ajout de.";
+            echo "Erreur lors de l'ajout de l'article.";
         }
     } else {
-        // echo "Veuillez remplir tous les champs obligatoires pour ajouter un continent.";
+        echo "Veuillez remplir tous les champs obligatoires.";
     }
 }
 
@@ -130,6 +136,19 @@ if (isset($_POST["ajoutNArticel"])) {
             border-radius: 5px;
         }
     </style>
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_tag').select2({
+                placeholder: "Select tags",
+                allowClear: true
+            });
+        });
+    </script> -->
+
+
 </head>
 
 <body>
@@ -438,7 +457,7 @@ if (isset($_POST["ajoutNArticel"])) {
     <!-- Copyright End -->
 
 
-    <!-- Add Vehicle Modal -->
+    <!-- Add Article Modal -->
     <div class="modal fade" id="addArticleModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -450,7 +469,7 @@ if (isset($_POST["ajoutNArticel"])) {
                     <div class="modal-body">
                         <input type="text" name="titre" class="form-control mb-2" placeholder="Titre de l'article" required>
                         <textarea name="contenu" class="form-control mb-2" placeholder="Contenu" required></textarea>
-                        <input type="text" name="image_url" class="form-control mb-2" placeholder="Url de l'image" required>
+                        <input type="text" name="image_url" class="form-control mb-2" placeholder="Url de l'image">
                         <select id="id_theme" name="id_theme" class="form-select mb-2" required>
                             <option value="">Thème</option>
                             <?php foreach ($themes as $t): ?>
@@ -459,8 +478,8 @@ if (isset($_POST["ajoutNArticel"])) {
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <select id="id_tag" name="id_tag" class="form-select" required>
-                            <option value="">Tags</option>
+                        <select id="id_tag" name="id_tag[]" class="form-select" required multiple>
+                            <!-- <option value="">Tags</option> -->
                             <?php foreach ($tags as $tag): ?>
                                 <option value="<?= htmlspecialchars($tag['id_tag']) ?>">
                                     <?= htmlspecialchars($tag['nom']) ?>
@@ -470,7 +489,7 @@ if (isset($_POST["ajoutNArticel"])) {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" name="ajoutNArticel" class="btn btn-primary">Ajouter</button>
+                        <button type="submit" name="ajoutNArticle" class="btn btn-primary">Ajouter</button>
                     </div>
                 </form>
             </div>
