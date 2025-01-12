@@ -28,8 +28,6 @@ $themeId = isset($_GET['id_theme']) ? intval($_GET['id_theme']) : null;
 
 // Fetch articles based on theme ID
 $article = new Article($conn);
-$articles = $article->getArticlesByTheme($themeId);
-
 
 
 $tag = new Tag($conn);
@@ -47,7 +45,6 @@ if (isset($_POST["ajoutNArticle"])) {
         $article->titre = $_POST['titre'];
         $article->contenu = $_POST['contenu'];
         $article->image_url = $_POST['image_url'];
-        // $article->statut = $_POST['statut'];
         $article->id_theme = intval($_POST['id_theme']);
         // Get tags as an array
         $tags = array_map('intval', $_POST['id_tag']);
@@ -63,32 +60,28 @@ if (isset($_POST["ajoutNArticle"])) {
     }
 }
 
+// Pagination parameters
+$perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : 5;
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$offset = ($page - 1) * $perPage;
 
-// Gestion des articles en fonction de la recherche ou du filtre
 if (isset($_GET['tag']) && !empty($_GET['tag'])) {
     $tagId = intval($_GET['tag']);
-    $articles = $article->filterArticlesByTags($tagId, $themeId);
+    $totalArticles = count($article->filterArticlesByTags($tagId, $themeId)); // Total pour pagination
+    $articles = array_slice($article->filterArticlesByTags($tagId, $themeId), $offset, $perPage); // Articles paginés
 } elseif (isset($_GET['search']) && !empty($_GET['search'])) {
     $searchTerm = $_GET['search'];
-    $articles = $article->searchArticles($searchTerm);
+    $totalArticles = count($article->searchArticles($searchTerm)); // Total pour pagination
+    $articles = array_slice($article->searchArticles($searchTerm), $offset, $perPage); // Articles paginés
 } elseif ($themeId !== null) {
-    $articles = $article->getArticlesByTheme($themeId);
+    $totalArticles = $article->countArticlesByTheme($themeId); // Total pour pagination
+    $articles = $article->getPaginatedArticlesByTheme($themeId, $perPage, $offset); // Articles paginés
 } else {
     echo "Invalid theme ID.";
     exit();
 }
 
-
-
-
-// Pagination parameters
-$perPage = isset($_GET['perPage']) && in_array($_GET['perPage'], [5, 10, 15]) ? intval($_GET['perPage']) : 5;
-$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$offset = ($page - 1) * $perPage;
-
-// Get articles with pagination
-$totalArticles = $article->countArticlesByTheme($themeId);
-$articles = $article->getPaginatedArticlesByTheme($themeId, $perPage, $offset);
+// Calculer le nombre total de pages
 $totalPages = ceil($totalArticles / $perPage);
 
 
@@ -309,16 +302,19 @@ $totalPages = ceil($totalArticles / $perPage);
                 <h3 class="text-danger">Articles pour le thème sélectionné</h3>
             <?php endif; ?>
 
+
             <div class="d-flex justify-content-end align-items-center mb-4">
+                <label for="perPageSelect" class="me-2">Afficher :</label>
                 <form method="GET">
                     <input type="hidden" name="id_theme" value="<?= $themeId ?>">
-                    <select name="perPage" onchange="this.form.submit()" class="form-select w-auto">
+                    <select id="perPageSelect" name="perPage" onchange="this.form.submit()" class="form-select w-auto">
                         <option value="5" <?= $perPage == 5 ? 'selected' : '' ?>>5 par page</option>
                         <option value="10" <?= $perPage == 10 ? 'selected' : '' ?>>10 par page</option>
                         <option value="15" <?= $perPage == 15 ? 'selected' : '' ?>>15 par page</option>
                     </select>
                 </form>
             </div>
+
 
             <div class="row g-4 mb-4">
                 <?php if (!empty($articles)): ?>
@@ -348,19 +344,21 @@ $totalPages = ceil($totalArticles / $perPage);
 
 
             <!-- Pagination controls -->
-
-
             <nav>
                 <ul class="pagination justify-content-center">
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                         <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                            <a class="page-link" href="?id_theme=<?= $themeId ?>&perPage=<?= $perPage ?>&page=<?= $i ?>">
+                            <a class="page-link"
+                                href="?id_theme=<?= $themeId ?>&perPage=<?= $perPage ?>&page=<?= $i ?>
+                   <?= isset($_GET['tag']) ? '&tag=' . htmlspecialchars($_GET['tag']) : '' ?>
+                   <?= isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : '' ?>">
                                 <?= $i ?>
                             </a>
                         </li>
                     <?php endfor; ?>
                 </ul>
             </nav>
+
 
         </div>
     </div>

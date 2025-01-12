@@ -64,33 +64,32 @@ class Article
             }
 
 
-             // Récupère l'ID de l'article inséré
-        $articleId = $this->conn->lastInsertId();
+            // Récupère l'ID de l'article inséré
+            $articleId = $this->conn->lastInsertId();
 
 
-        // Insère les tags liés à cet article
-        $sqlTags = "INSERT INTO articles_tags (id_article, id_tag) VALUES (:id_article, :id_tag)";
-        $stmtTags = $this->conn->prepare($sqlTags);
+            // Insère les tags liés à cet article
+            $sqlTags = "INSERT INTO articles_tags (id_article, id_tag) VALUES (:id_article, :id_tag)";
+            $stmtTags = $this->conn->prepare($sqlTags);
 
-        
-        foreach ($tags as $tagId) {
-            $stmtTags->bindParam(':id_article', $articleId);
-            $stmtTags->bindParam(':id_tag', $tagId);
-            if (!$stmtTags->execute()) {
-                throw new Exception("Erreur lors de l'insertion des tags.");
+
+            foreach ($tags as $tagId) {
+                $stmtTags->bindParam(':id_article', $articleId);
+                $stmtTags->bindParam(':id_tag', $tagId);
+                if (!$stmtTags->execute()) {
+                    throw new Exception("Erreur lors de l'insertion des tags.");
+                }
             }
+
+            // Confirme la transaction
+            $this->conn->commit();
+            return true;
+        } catch (Exception $e) {
+            // Annule la transaction en cas d'erreur
+            $this->conn->rollBack();
+            echo "Erreur : " . $e->getMessage();
+            return false;
         }
-
-              // Confirme la transaction
-              $this->conn->commit();
-              return true;
-          } catch (Exception $e) {
-              // Annule la transaction en cas d'erreur
-              $this->conn->rollBack();
-              echo "Erreur : " . $e->getMessage();
-              return false;
-          }
-
     }
 
 
@@ -106,7 +105,7 @@ class Article
         $stmt->bindParam(':id_theme', $themeId, PDO::PARAM_INT);
         $stmt->execute();
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         // Ajouter les informations supplémentaires pour chaque article
         foreach ($articles as &$article) {
             // Récupérer le nom du thème
@@ -119,7 +118,7 @@ class Article
             $stmtTheme->bindParam(':id_theme', $article['id_theme'], PDO::PARAM_INT);
             $stmtTheme->execute();
             $article['theme_nom'] = $stmtTheme->fetchColumn();
-    
+
             // Récupérer le nom de l'utilisateur
             $queryUser = "
                 SELECT username 
@@ -130,7 +129,7 @@ class Article
             $stmtUser->bindParam(':id_user', $article['id_user'], PDO::PARAM_INT);
             $stmtUser->execute();
             $article['user_name'] = $stmtUser->fetchColumn();
-    
+
             // Compter le nombre de commentaires
             $queryComments = "
                 SELECT COUNT(*) 
@@ -142,10 +141,10 @@ class Article
             $stmtComments->execute();
             $article['comment_count'] = $stmtComments->fetchColumn();
         }
-    
+
         return $articles;
     }
-      
+
 
 
     public function getAllArticlesWithComments()
@@ -158,7 +157,7 @@ class Article
         $stmt = $this->conn->prepare($queryArticles);
         $stmt->execute();
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         // Ajouter les informations supplémentaires pour chaque article
         foreach ($articles as &$article) {
             // Récupérer le nom du thème
@@ -171,7 +170,7 @@ class Article
             $stmtTheme->bindParam(':id_theme', $article['id_theme'], PDO::PARAM_INT);
             $stmtTheme->execute();
             $article['theme_nom'] = $stmtTheme->fetchColumn();
-    
+
             // Récupérer le nom de l'utilisateur
             $queryUser = "
                 SELECT username 
@@ -182,7 +181,7 @@ class Article
             $stmtUser->bindParam(':id_user', $article['id_user'], PDO::PARAM_INT);
             $stmtUser->execute();
             $article['user_name'] = $stmtUser->fetchColumn();
-    
+
             // Compter le nombre de commentaires
             $queryComments = "
                 SELECT COUNT(*) 
@@ -194,9 +193,9 @@ class Article
             $stmtComments->execute();
             $article['comment_count'] = $stmtComments->fetchColumn();
         }
-    
+
         return $articles;
-    }    
+    }
 
     public function getCommentCountByArticleId($id_article)
     {
@@ -246,7 +245,7 @@ class Article
         $stmt->bindParam(':title', $searchTerm, PDO::PARAM_STR);
         $stmt->execute();
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         // Ajouter les informations des thèmes et utilisateurs, et le nombre de commentaires
         foreach ($articles as &$article) {
             // Rechercher le nom du thème
@@ -259,7 +258,7 @@ class Article
             $stmtTheme->bindParam(':id_theme', $article['id_theme'], PDO::PARAM_INT);
             $stmtTheme->execute();
             $article['theme_nom'] = $stmtTheme->fetchColumn();
-    
+
             // Rechercher le nom de l'utilisateur
             $queryUser = "
                 SELECT username 
@@ -270,7 +269,7 @@ class Article
             $stmtUser->bindParam(':id_user', $article['id_user'], PDO::PARAM_INT);
             $stmtUser->execute();
             $article['user_name'] = $stmtUser->fetchColumn();
-    
+
             // Compter le nombre de commentaires
             $queryComments = "
                 SELECT COUNT(*) 
@@ -282,11 +281,11 @@ class Article
             $stmtComments->execute();
             $article['comment_count'] = $stmtComments->fetchColumn();
         }
-    
+
         return $articles;
     }
-    
-    
+
+
 
     public function filterArticlesByTags($tagId, $themeId)
     {
@@ -306,7 +305,7 @@ class Article
         $stmt->bindParam(':themeId', $themeId, PDO::PARAM_INT);
         $stmt->execute();
         $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         // Ajouter les informations supplémentaires pour chaque article
         foreach ($articles as &$article) {
             // Récupérer le nom du thème
@@ -319,7 +318,7 @@ class Article
             $stmtTheme->bindParam(':id_theme', $article['id_theme'], PDO::PARAM_INT);
             $stmtTheme->execute();
             $article['theme_nom'] = $stmtTheme->fetchColumn();
-    
+
             // Récupérer le nom de l'utilisateur
             $queryUser = "
                 SELECT username 
@@ -330,7 +329,7 @@ class Article
             $stmtUser->bindParam(':id_user', $article['id_user'], PDO::PARAM_INT);
             $stmtUser->execute();
             $article['user_name'] = $stmtUser->fetchColumn();
-    
+
             // Compter les commentaires
             $queryComments = "
                 SELECT COUNT(*) 
@@ -342,9 +341,66 @@ class Article
             $stmtComments->execute();
             $article['comment_count'] = $stmtComments->fetchColumn();
         }
-    
+
         return $articles;
-    }    
-    
-    
+    }
+
+    public function getPaginatedArticlesByTheme($themeId, $limit, $offset)
+    {
+        // Récupérer les articles paginés pour le thème
+        $query = "SELECT * FROM {$this->table} WHERE id_theme = :id_theme LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_theme', $themeId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Ajouter les informations supplémentaires pour chaque article
+        foreach ($articles as &$article) {
+            // Récupérer le nom du thème
+            $queryTheme = "
+            SELECT nom 
+            FROM themes 
+            WHERE id_theme = :id_theme
+        ";
+            $stmtTheme = $this->conn->prepare($queryTheme);
+            $stmtTheme->bindParam(':id_theme', $article['id_theme'], PDO::PARAM_INT);
+            $stmtTheme->execute();
+            $article['theme_nom'] = $stmtTheme->fetchColumn();
+
+            // Récupérer le nom de l'utilisateur
+            $queryUser = "
+            SELECT username 
+            FROM usersite 
+            WHERE id_user = :id_user
+        ";
+            $stmtUser = $this->conn->prepare($queryUser);
+            $stmtUser->bindParam(':id_user', $article['id_user'], PDO::PARAM_INT);
+            $stmtUser->execute();
+            $article['user_name'] = $stmtUser->fetchColumn();
+
+            // Compter le nombre de commentaires
+            $queryComments = "
+            SELECT COUNT(*) 
+            FROM commentaires 
+            WHERE id_article = :id_article
+        ";
+            $stmtComments = $this->conn->prepare($queryComments);
+            $stmtComments->bindParam(':id_article', $article['id_article'], PDO::PARAM_INT);
+            $stmtComments->execute();
+            $article['comment_count'] = $stmtComments->fetchColumn();
+        }
+
+        return $articles;
+    }
+
+    public function countArticlesByTheme($themeId)
+    {
+        $query = "SELECT COUNT(*) FROM {$this->table} WHERE id_theme = :id_theme";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_theme', $themeId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }
