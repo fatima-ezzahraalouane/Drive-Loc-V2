@@ -14,17 +14,23 @@ require '../classes/Theme.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-// Check if theme ID is passed in the URL
+// Vérification de l'ID du thème uniquement si aucune recherche ou filtrage n'est en cours
 if (!isset($_GET['id_theme']) || empty($_GET['id_theme'])) {
-    echo "Invalid theme ID.";
-    exit();
+    if (!isset($_GET['search']) && !isset($_GET['tag'])) {
+        echo "Invalid theme ID.";
+        exit();
+    }
 }
 
-$themeId = intval($_GET['id_theme']); // Sanitize input
+// Récupération de l'ID du thème si présent
+$themeId = isset($_GET['id_theme']) ? intval($_GET['id_theme']) : null;
+
 
 // Fetch articles based on theme ID
 $article = new Article($conn);
 $articles = $article->getArticlesByTheme($themeId);
+
+
 
 $tag = new Tag($conn);
 $tags = $tag->getAllTags();
@@ -56,6 +62,25 @@ if (isset($_POST["ajoutNArticle"])) {
         echo "Veuillez remplir tous les champs obligatoires.";
     }
 }
+
+
+// Gestion des articles en fonction de la recherche ou du filtre
+if (isset($_GET['tag']) && !empty($_GET['tag'])) {
+    $tagId = intval($_GET['tag']);
+    $articles = $article->filterArticlesByTags($tagId, $themeId);
+} elseif (isset($_GET['search']) && !empty($_GET['search'])) {
+    $searchTerm = $_GET['search'];
+    $articles = $article->searchArticles($searchTerm);
+} elseif ($themeId !== null) {
+    $articles = $article->getArticlesByTheme($themeId);
+} else {
+    echo "Invalid theme ID.";
+    exit();
+}
+
+
+
+
 
 // try {
 //     $themes = $themesClass->getAllThemes();
@@ -136,19 +161,6 @@ if (isset($_POST["ajoutNArticle"])) {
             border-radius: 5px;
         }
     </style>
-
-    <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#id_tag').select2({
-                placeholder: "Select tags",
-                allowClear: true
-            });
-        });
-    </script> -->
-
-
 </head>
 
 <body>
@@ -257,42 +269,68 @@ if (isset($_POST["ajoutNArticle"])) {
 
             <!-- Filter and Search Bar -->
             <div class="filter-search-container mb-4">
-                <form method="GET" action="#">
+                <form method="GET" action="">
                     <div class="filter-bar">
-                        <select name="tags" class="filter-select" id="tags">
-                            <option value="">Toutes les tags</option>
-                            <?php foreach ($tags as $tag) { ?>
-                                <option value="<?= htmlspecialchars($categorie['id_tag']) ?>">
+                        <!-- Filtrage par tags -->
+                        <select name="tag" class="filter-select">
+                            <option value="">Tous les tags</option>
+                            <?php foreach ($tags as $tag): ?>
+                                <option value="<?= htmlspecialchars($tag['id_tag']) ?>"
+                                    <?= (isset($_GET['tag']) && $_GET['tag'] == $tag['id_tag']) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($tag['nom']) ?>
                                 </option>
-                            <?php } ?>
+                            <?php endforeach; ?>
                         </select>
-                        <input type="text" name="search" class="search-input" placeholder="Rechercher un article...">
+
+                        <!-- Recherche par titre -->
+                        <input type="text" name="search" class="search-input"
+                            placeholder="Rechercher un article par titre..."
+                            value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+
+                        <!-- Inclure id_theme dans le formulaire -->
+                        <input type="hidden" name="id_theme" value="<?= $themeId ?>">
+
                         <button type="submit" class="btn btn-primary">Filtrer</button>
                     </div>
                 </form>
             </div>
 
+
+
+
+            <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
+                <h3 class="text-danger mb-4">Résultats pour la recherche : "<?= htmlspecialchars($_GET['search']) ?>"</h3>
+            <?php elseif (isset($_GET['tag']) && !empty($_GET['tag'])): ?>
+                <h3 class="text-danger mb-4">Articles avec le tag : <?= htmlspecialchars($tags[array_search($_GET['tag'], array_column($tags, 'id_tag'))]['nom']) ?></h3>
+            <?php else: ?>
+                <h3 class="text-danger mb-4">Articles pour le thème sélectionné</h3>
+            <?php endif; ?>
+
+
             <div class="row g-4">
-                <?php foreach ($articles as $article): ?>
-                    <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="blog-item">
-                            <div class="blog-img">
-                                <img src="<?= htmlspecialchars($article['image_url']) ?>" class="img-fluid rounded-top w-100" alt="Image">
-                            </div>
-                            <div class="blog-content rounded-bottom p-4">
-                                <div class="blog-date"><?= date('d M Y', strtotime($article['date_creation'])) ?></div>
-                                <div class="blog-comment my-3">
-                                    <div class="small"><span class="fa fa-user text-primary"></span><span class="ms-2"><?= htmlspecialchars($article['user_name']) ?></span></div>
-                                    <div class="small"><span class="fa fa-comment-alt text-primary"></span><span class="ms-2"><?= $article['comment_count'] ?> Comments</span></div>
+                <?php if (!empty($articles)): ?>
+                    <?php foreach ($articles as $article): ?>
+                        <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="blog-item">
+                                <div class="blog-img">
+                                    <img src="<?= htmlspecialchars($article['image_url']) ?>" class="img-fluid rounded-top w-100" alt="Image">
                                 </div>
-                                <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($article['titre']) ?></a>
-                                <p class="mb-3"><?= substr(htmlspecialchars($article['contenu']), 0, 50) ?>...</p>
-                                <a href="affi_details.php?id_article=<?= $article['id_article'] ?>" class="">Read More <i class="fa fa-arrow-right"></i></a>
+                                <div class="blog-content rounded-bottom p-4">
+                                    <div class="blog-date"><?= date('d M Y', strtotime($article['date_creation'])) ?></div>
+                                    <div class="blog-comment my-3">
+                                        <div class="small"><span class="fa fa-user text-primary"></span><span class="ms-2"><?= htmlspecialchars($article['user_name']) ?></span></div>
+                                        <div class="small"><span class="fa fa-comment-alt text-primary"></span><span class="ms-2"><?= $article['comment_count'] ?> Comments</span></div>
+                                    </div>
+                                    <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($article['titre']) ?></a>
+                                    <p class="mb-3"><?= substr(htmlspecialchars($article['contenu']), 0, 50) ?>...</p>
+                                    <a href="affi_details.php?id_article=<?= $article['id_article'] ?>" class="">En savoir plus <i class="fa fa-arrow-right"></i></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Aucun article trouvé pour ce filtre ou cette recherche.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -457,7 +495,7 @@ if (isset($_POST["ajoutNArticle"])) {
     <!-- Copyright End -->
 
 
-    <!-- Add Article Modal -->
+    <!-- Formualaire pour ajouter nouveau article -->
     <div class="modal fade" id="addArticleModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
