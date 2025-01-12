@@ -81,12 +81,16 @@ if (isset($_GET['tag']) && !empty($_GET['tag'])) {
 
 
 
+// Pagination parameters
+$perPage = isset($_GET['perPage']) && in_array($_GET['perPage'], [5, 10, 15]) ? intval($_GET['perPage']) : 5;
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$offset = ($page - 1) * $perPage;
 
-// try {
-//     $themes = $themesClass->getAllThemes();
-// } catch (Exception $e) {
-//     echo "Erreur lors de la récupération des données : " . $e->getMessage();
-// }
+// Get articles with pagination
+$totalArticles = $article->countArticlesByTheme($themeId);
+$articles = $article->getPaginatedArticlesByTheme($themeId, $perPage, $offset);
+$totalPages = ceil($totalArticles / $perPage);
+
 
 ?>
 
@@ -297,17 +301,26 @@ if (isset($_GET['tag']) && !empty($_GET['tag'])) {
 
 
 
-
             <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
-                <h3 class="text-danger mb-4">Résultats pour la recherche : "<?= htmlspecialchars($_GET['search']) ?>"</h3>
+                <h3 class="text-danger">Résultats pour la recherche : "<?= htmlspecialchars($_GET['search']) ?>"</h3>
             <?php elseif (isset($_GET['tag']) && !empty($_GET['tag'])): ?>
-                <h3 class="text-danger mb-4">Articles avec le tag : <?= htmlspecialchars($tags[array_search($_GET['tag'], array_column($tags, 'id_tag'))]['nom']) ?></h3>
+                <h3 class="text-danger">Articles avec le tag : <?= htmlspecialchars($tags[array_search($_GET['tag'], array_column($tags, 'id_tag'))]['nom']) ?></h3>
             <?php else: ?>
-                <h3 class="text-danger mb-4">Articles pour le thème sélectionné</h3>
+                <h3 class="text-danger">Articles pour le thème sélectionné</h3>
             <?php endif; ?>
 
+            <div class="d-flex justify-content-end align-items-center mb-4">
+                <form method="GET">
+                    <input type="hidden" name="id_theme" value="<?= $themeId ?>">
+                    <select name="perPage" onchange="this.form.submit()" class="form-select w-auto">
+                        <option value="5" <?= $perPage == 5 ? 'selected' : '' ?>>5 par page</option>
+                        <option value="10" <?= $perPage == 10 ? 'selected' : '' ?>>10 par page</option>
+                        <option value="15" <?= $perPage == 15 ? 'selected' : '' ?>>15 par page</option>
+                    </select>
+                </form>
+            </div>
 
-            <div class="row g-4">
+            <div class="row g-4 mb-4">
                 <?php if (!empty($articles)): ?>
                     <?php foreach ($articles as $article): ?>
                         <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
@@ -332,6 +345,23 @@ if (isset($_GET['tag']) && !empty($_GET['tag'])) {
                     <p>Aucun article trouvé pour ce filtre ou cette recherche.</p>
                 <?php endif; ?>
             </div>
+
+
+            <!-- Pagination controls -->
+
+
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                            <a class="page-link" href="?id_theme=<?= $themeId ?>&perPage=<?= $perPage ?>&page=<?= $i ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+
         </div>
     </div>
     <!-- Blog End -->
