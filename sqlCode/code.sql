@@ -214,33 +214,49 @@ VALUES
 INSERT INTO articles_tags (id_article, id_tag)
 VALUES
 (1, 1), -- Réduire consommation de carburant (Eco-conduite)
+(1, 3), -- Réduire consommation de carburant (Sécurité)
 (2, 3), -- Erreurs courantes (Sécurité)
+(2, 2), -- Erreurs courantes (Entretien)
 (3, 1), -- Conduite éco-responsable (Eco-conduite)
-(4, 3); -- Concentration au volant (Sécurité)
+(3, 5), -- Conduite éco-responsable (Électrique)
+(4, 3), -- Concentration au volant (Sécurité)
+(4, 6); -- Concentration au volant (Tendances)
 
 
 -- Liens pour le thème "Entretien Automobile" (id_theme = 2)
 INSERT INTO articles_tags (id_article, id_tag)
 VALUES
 (5, 2), -- Pression des pneus (Entretien)
+(5, 3), -- Pression des pneus (Sécurité)
 (6, 2), -- Plaquettes de frein (Entretien)
+(6, 3), -- Plaquettes de frein (Sécurité)
 (7, 2), -- Entretien moteur (Entretien)
-(8, 2); -- Batterie (Entretien)
+(7, 4), -- Entretien moteur (Technologie)
+(8, 2), -- Batterie (Entretien)
+(8, 5); -- Batterie (Électrique)
 
 
 -- Liens pour le thème "Sécurité Routière" (id_theme = 3)
 INSERT INTO articles_tags (id_article, id_tag)
 VALUES
 (9, 3), -- Ceinture de sécurité (Sécurité)
+(9, 6), -- Ceinture de sécurité (Tendances)
 (10, 3), -- Téléphone au volant (Sécurité)
+(10, 4), -- Téléphone au volant (Technologie)
 (11, 3), -- Vitesse et météo (Sécurité)
-(12, 3); -- Conduite de nuit (Sécurité)
+(11, 1), -- Vitesse et météo (Eco-conduite)
+(12, 3), -- Conduite de nuit (Sécurité)
+(12, 6); -- Conduite de nuit (Tendances)
 
 
 -- Liens pour le thème "Tendances du Marché" (id_theme = 4)
 INSERT INTO articles_tags (id_article, id_tag)
 VALUES
 (13, 5), -- Véhicules électriques (Électrique)
+(13, 6), -- Véhicules électriques (Tendances)
 (14, 6), -- SUV (Tendances)
+(14, 4), -- SUV (Technologie)
 (15, 4), -- Technologies (Technologie)
-(16, 6); -- Voitures autonomes (Tendances)
+(15, 6), -- Technologies (Tendances)
+(16, 6), -- Voitures autonomes (Tendances)
+(16, 4); -- Voitures autonomes (Technologie)

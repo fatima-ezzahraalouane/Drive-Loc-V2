@@ -102,7 +102,6 @@ $themes = $theme->getAllThemes();
                         <a href="accueil.php" class="nav-item nav-link">Accueil</a>
                         <a href="vehicule.php" class="nav-item nav-link">Véhicule</a>
                         <a href="blog.php" class="nav-item nav-link active">Blog</a>
-                        <a href="article.php" class="nav-item nav-link">Articles</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Service</a>
 

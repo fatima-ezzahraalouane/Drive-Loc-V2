@@ -46,6 +46,21 @@ class Tag
         return $tagIds;
     }
 
+    public function linkTagToArticle($articleId, $tagId)
+    {
+        try {
+            $query = "INSERT INTO articles_tags (id_article, id_tag) VALUES (:id_article, :id_tag)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_article', $articleId);
+            $stmt->bindParam(':id_tag', $tagId);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la liaison du tag à l'article : " . $e->getMessage());
+            return false;
+        }
+    }
+    
     public function getAllTags()
     {
         try {

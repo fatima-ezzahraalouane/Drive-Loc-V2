@@ -188,8 +188,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 1) {
                     </div>
                     <div class="modal-body">
                         <input type="text" class="form-control mb-2" placeholder="Category Name">
-                        <textarea class="form-control" placeholder="Description"></textarea>
-                    </div>
+à                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-primary">Add</button>
