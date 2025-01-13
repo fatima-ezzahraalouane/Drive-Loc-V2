@@ -102,10 +102,9 @@ INSERT INTO vehicule (modele, marque, prix_par_jour, disponibilite, id_categorie
 CREATE TABLE themes (
     id_theme INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT
+    description TEXT,
+    imgUrl varchar(250) NOT null;
 );
-ALTER TABLE themes
-ADD COLUMN imgUrl varchar(250) NOT null;
 
 -- Table articles
 CREATE TABLE articles (

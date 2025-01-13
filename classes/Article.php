@@ -201,11 +201,12 @@ class Article
     {
         $query = "SELECT COUNT(*) AS comment_count FROM commentaires WHERE id_article = :id_article";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_article', $id_article);
+        $stmt->bindParam(':id_article', $id_article, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['comment_count'];
     }
+    
 
     public function updateArticle()
     {
@@ -406,46 +407,48 @@ class Article
     
 
     public function getArticleById($id)
-{
-    $query = "
-        SELECT a.*, t.nom AS theme_nom, u.username AS user_name
-        FROM articles a
-        LEFT JOIN themes t ON a.id_theme = t.id_theme
-        LEFT JOIN usersite u ON a.id_user = u.id_user
-        WHERE a.id_article = :id
-    ";
-
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $article = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($article) {
-        // Récupérer les tags associés
-        $queryTags = "
-            SELECT t.nom 
-            FROM tags t
-            INNER JOIN articles_tags at ON t.id_tag = at.id_tag
-            WHERE at.id_article = :id
+    {
+        $query = "
+            SELECT a.*, t.nom AS theme_nom, u.username AS user_name
+            FROM articles a
+            LEFT JOIN themes t ON a.id_theme = t.id_theme
+            LEFT JOIN usersite u ON a.id_user = u.id_user
+            WHERE a.id_article = :id
         ";
-        $stmtTags = $this->conn->prepare($queryTags);
-        $stmtTags->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmtTags->execute();
-        $article['tags'] = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
-
-        // Récupérer les commentaires associés
-        $queryComments = "
-            SELECT c.contenu
-            FROM commentaires c
-            WHERE c.id_article = :id
-        ";
-        $stmtComments = $this->conn->prepare($queryComments);
-        $stmtComments->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmtComments->execute();
-        $article['comments'] = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $article = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($article) {
+            // Récupérer les tags associés
+            $queryTags = "
+                SELECT t.nom 
+                FROM tags t
+                INNER JOIN articles_tags at ON t.id_tag = at.id_tag
+                WHERE at.id_article = :id
+            ";
+            $stmtTags = $this->conn->prepare($queryTags);
+            $stmtTags->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtTags->execute();
+            $article['tags'] = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
+    
+            // Récupérer les commentaires associés avec l'auteur et la date
+            $queryComments = "
+                SELECT c.contenu, c.date_creation, u.username AS auteur
+                FROM commentaires c
+                LEFT JOIN usersite u ON c.id_user = u.id_user
+                WHERE c.id_article = :id
+                ORDER BY c.date_creation DESC
+            ";
+            $stmtComments = $this->conn->prepare($queryComments);
+            $stmtComments->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtComments->execute();
+            $article['comments'] = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
+        }
+    
+        return $article;
     }
-
-    return $article;
-}
+    
 
 }
