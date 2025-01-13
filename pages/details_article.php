@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
 
 require '../config/Database.php';
 require '../classes/Article.php';
+require '../classes/Favori.php';
+
+
 
 // Connexion à la base de données
 $database = new Database();
@@ -29,6 +32,9 @@ if (!$articleDetails) {
     echo "Article introuvable.";
     exit();
 }
+
+$favori = new Favori($conn);
+$isFavorite = $favori->isFavorite($_SESSION['user_id'], $id_article);
 ?>
 
 <!DOCTYPE html>
@@ -113,9 +119,16 @@ if (!$articleDetails) {
         <!-- Boutons d'action -->
         <div class="mt-4">
             <!-- Bouton Ajouter aux favoris -->
-            <a href="add_to_favorites.php?id=<?= $id_article ?>" class="btn btn-primary">
-                <i class="fas fa-heart"></i> Ajouter aux favoris
-            </a>
+            <?php if ($isFavorite): ?>
+                <button class="btn btn-secondary" disabled>
+                    <i class="fas fa-heart"></i> Déjà dans les favoris
+                </button>
+            <?php else: ?>
+                <a href="add_to_favorites.php?id=<?= $id_article ?>" class="btn btn-primary">
+                    <i class="fas fa-heart"></i> Ajouter aux favoris
+                </a>
+            <?php endif; ?>
+
 
         </div>
 
@@ -124,10 +137,7 @@ if (!$articleDetails) {
             <h3>Commentaires :</h3>
 
             <?php if (!empty($articleDetails['comments'])): ?>
-                <pre><?php print_r($articleDetails['comments']); ?></pre>
                 <?php foreach ($articleDetails['comments'] as $comment): ?>
-                    <pre><?php print_r($comment); ?></pre>
-
                     <div class="card mb-3">
                         <div class="card-body">
                             <h5 class="card-title">
@@ -139,18 +149,18 @@ if (!$articleDetails) {
                             </p>
                             <?php if (!empty($comment['id_user']) && $_SESSION['user_id'] == $comment['id_user']): ?>
                                 <div class="mt-3">
-        <form action="update_comment.php" method="POST" class="d-inline">
-        <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
-        <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
-            <button type="submit" class="btn btn-warning btn-sm">Modifier</button>
-        </form>
-        <form action="delete_comment.php" method="POST" class="d-inline">
-            <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
-            <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
-            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-        </form>
-    </div>
-<?php endif; ?>
+                                    <form action="update_comment.php" method="POST" class="d-inline">
+                                        <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
+                                        <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
+                                        <button type="submit" class="btn btn-warning btn-sm">Modifier</button>
+                                    </form>
+                                    <form action="delete_comment.php" method="POST" class="d-inline">
+                                        <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
+                                        <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                    </form>
+                                </div>
+                            <?php endif; ?>
 
                         </div>
                     </div>
@@ -171,13 +181,13 @@ if (!$articleDetails) {
 
             <!-- Bouton Annuler -->
             <div class="mt-3">
-    <a href="affi_articles.php?id_theme=<?= htmlspecialchars($articleDetails['id_theme']) ?>
+                <a href="affi_articles.php?id_theme=<?= htmlspecialchars($articleDetails['id_theme']) ?>
        <?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>
-       <?= isset($_GET['tag']) ? '&tag=' . htmlspecialchars($_GET['tag']) : '' ?>" 
-       class="btn btn-secondary">
-        Annuler
-    </a>
-</div>
+       <?= isset($_GET['tag']) ? '&tag=' . htmlspecialchars($_GET['tag']) : '' ?>"
+                    class="btn btn-secondary">
+                    Annuler
+                </a>
+            </div>
 
         </div>
 
