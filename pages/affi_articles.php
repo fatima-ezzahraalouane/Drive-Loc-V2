@@ -9,6 +9,8 @@ require '../config/Database.php';
 require '../classes/Article.php';
 require '../classes/Tags.php';
 require '../classes/Theme.php';
+require '../classes/Commentaire.php';
+require '../classes/Favori.php';
 
 // Database Connection
 $database = new Database();
@@ -85,6 +87,23 @@ if (isset($_GET['tag']) && !empty($_GET['tag'])) {
 $totalPages = ceil($totalArticles / $perPage);
 
 
+$commentaire = new Commentaire($conn);
+$favori = new Favori($conn);
+$comments = $commentaire->getCommentsByArticle($article->id_article);
+
+if (isset($_POST['add_comment'])) {
+    $content = $_POST['comment_content'];
+    $articleId = $_POST['article_id'];
+    $userId = $_SESSION['user_id'];
+    $commentaire->addComment($articleId, $userId, $content);
+}
+
+if (isset($_POST['add_favorite'])) {
+    $articleId = $_POST['article_id'];
+    $userId = $_SESSION['user_id'];
+    $favori->addFavorite($userId, $articleId);
+}
+
 ?>
 
 
@@ -156,6 +175,51 @@ $totalPages = ceil($totalArticles / $perPage);
             padding: 8px 15px;
             font-size: 14px;
             border-radius: 5px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* #modalTags span {
+            margin: 0 5px;
+        } */
+
+        #modalTags span {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .comment-section {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        #modalComments {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        #modalComments p {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #ffffff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #modalComments p span {
+            display: block;
+            font-size: 12px;
+            color: #555;
         }
     </style>
 </head>
@@ -332,7 +396,13 @@ $totalPages = ceil($totalArticles / $perPage);
                                     </div>
                                     <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($article['titre']) ?></a>
                                     <p class="mb-3"><?= substr(htmlspecialchars($article['contenu']), 0, 50) ?>...</p>
-                                    <a href="affi_details.php?id_article=<?= $article['id_article'] ?>" class="">En savoir plus <i class="fa fa-arrow-right"></i></a>
+                                    <button
+                                        class="btn btn-primary btn-details"
+                                        data-id="<?= $article['id_article'] ?>"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#articleModal">
+                                        En savoir plus <i class="fa fa-arrow-right"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -563,6 +633,78 @@ $totalPages = ceil($totalArticles / $perPage);
     </div>
 
 
+
+
+
+
+
+
+    <div id="articleModal" class="modal fade" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="articleModalLabel" class="modal-title">Détails de l'article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenu principal en deux colonnes -->
+                    <div class="row">
+                        <!-- Colonne pour l'image -->
+                        <div class="col-md-5">
+                            <img id="modalImage" src="" alt="Image de l'article" class="img-fluid rounded" style="max-height: 300px;">
+                        </div>
+                        <!-- Colonne pour les détails -->
+                        <div class="col-md-7">
+                            <h4 id="modalTitle" class="text-center mb-3"></h4>
+                            <p id="modalContent" class="text-muted mb-3"></p>
+                            <p id="modalDate" class="text-muted"><strong>Date : </strong><span></span></p>
+                            <p id="modalAuthor" class="text-muted"><strong>Auteur : </strong><span></span></p>
+                            <p id="modalTheme" class="text-muted"><strong>Thème : </strong><span></span></p>
+                            <div id="modalTags" class="mt-3">
+                                <strong>Tags : </strong>
+                                <!-- Les tags seront ajoutés ici dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section des commentaires -->
+                    <div class="mt-4">
+                        <h5>Commentaires</h5>
+                        <div id="modalComments" class="mb-3">
+    <?php foreach ($comments as $comment): ?>
+        <p>
+            <strong><?= htmlspecialchars($comment['username']) ?></strong> - 
+            <small><?= htmlspecialchars($comment['date_creation']) ?></small><br>
+            <?= htmlspecialchars($comment['contenu']) ?>
+        </p>
+    <?php endforeach; ?>
+</div>
+
+
+<form method="POST" action="">
+    <input type="hidden" name="article_id" value="<?= htmlspecialchars($article['id_article']) ?>">
+    <textarea id="commentInput" name="comment_content" class="form-control mb-2" placeholder="Ajouter un commentaire..." required></textarea>
+    <button type="submit" name="add_comment" id="addCommentBtn" class="btn btn-primary">Ajouter</button>
+</form>
+
+
+
+                        <!-- <textarea id="commentInput" class="form-control mb-2" placeholder="Ajouter un commentaire..."></textarea>
+                        <button id="addCommentBtn" class="btn btn-primary">Ajouter</button> -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="addToFavorites" class="btn btn-secondary">
+                        <i class="fas fa-heart"></i> Ajouter aux favoris
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Back to Top -->
     <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 
@@ -585,6 +727,45 @@ $totalPages = ceil($totalArticles / $perPage);
     <!-- Template Javascript -->
     <!-- <script src="js/main.js"></script> -->
     <script src="../assets/js/main.js"></script>
+    <script>
+        document.querySelectorAll('.btn-details').forEach(button => {
+            button.addEventListener('click', function() {
+                const articleId = this.dataset.id;
+
+                fetch(`get_article_details.php?id=${articleId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Remplir les champs de la modale
+                        document.getElementById('modalImage').src = data.image_url;
+                        document.getElementById('modalTitle').innerText = data.titre;
+                        document.getElementById('modalContent').innerText = data.contenu;
+                        document.getElementById('modalDate').querySelector('span').innerText = data.date_creation;
+                        document.getElementById('modalAuthor').querySelector('span').innerText = data.user_name;
+                        document.getElementById('modalTheme').querySelector('span').innerText = data.theme_nom;
+
+                        // Tags
+                        const tagsContainer = document.getElementById('modalTags');
+                        tagsContainer.innerHTML = '';
+                        data.tags.forEach(tag => {
+                            const tagElement = document.createElement('span');
+                            tagElement.className = 'badge bg-primary me-2';
+                            tagElement.innerText = tag.nom;
+                            tagsContainer.appendChild(tagElement);
+                        });
+
+                        // Commentaires
+                        const commentsContainer = document.getElementById('modalComments');
+                        commentsContainer.innerHTML = '';
+                        data.comments.forEach(comment => {
+                            const commentElement = document.createElement('p');
+                            commentElement.innerHTML = `<span><strong>${comment.user_name}</strong> - ${comment.date_creation}</span>${comment.contenu}`;
+                            commentsContainer.appendChild(commentElement);
+                        });
+                    })
+                    .catch(error => console.error('Erreur lors du chargement des données :', error));
+            });
+        });
+    </script>
 </body>
 
 </html>
