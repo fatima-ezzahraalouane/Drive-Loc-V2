@@ -58,10 +58,6 @@ if (!$articleDetails) {
             flex: 2;
         }
 
-        /* .comments-section {
-            margin-top: 30px;
-        } */
-
         .comments-section .card {
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -83,31 +79,6 @@ if (!$articleDetails) {
             font-size: 0.9em;
             color: #666;
         }
-
-        /* .favorite-btn, .cancel-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 15px;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            color: #fff;
-        }
-        .favorite-btn {
-            background-color: #343a40;
-        }
-        .favorite-btn:hover {
-            background-color:rgb(249, 249, 249);
-        }
-        .cancel-btn {
-            background-color: #dc3545;
-            margin-left: 10px;
-        }
-        .cancel-btn:hover {
-            background-color:rgb(255, 255, 255);
-        } */
     </style>
 </head>
 
@@ -182,8 +153,14 @@ if (!$articleDetails) {
 
             <!-- Bouton Annuler -->
             <div class="mt-3">
-                <a href="affi_article.php" class="btn btn-secondary">Annuler</a>
-            </div>
+    <a href="affi_articles.php?id_theme=<?= htmlspecialchars($articleDetails['id_theme']) ?>
+       <?= isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '' ?>
+       <?= isset($_GET['tag']) ? '&tag=' . htmlspecialchars($_GET['tag']) : '' ?>" 
+       class="btn btn-secondary">
+        Annuler
+    </a>
+</div>
+
         </div>
 
 

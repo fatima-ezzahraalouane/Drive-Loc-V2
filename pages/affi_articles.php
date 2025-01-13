@@ -26,6 +26,8 @@ if (!isset($_GET['id_theme']) || empty($_GET['id_theme'])) {
 
 // Récupération de l'ID du thème si présent
 $themeId = isset($_GET['id_theme']) ? intval($_GET['id_theme']) : null;
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : null;
+$tagId = isset($_GET['tag']) ? intval($_GET['tag']) : null;
 
 
 // Fetch articles based on theme ID
@@ -397,8 +399,8 @@ if (isset($_POST['add_favorite'])) {
                                     <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($article['titre']) ?></a>
                                     <p class="mb-3"><?= substr(htmlspecialchars($article['contenu']), 0, 50) ?>...</p>
                                     <a href="details_article.php?id=<?= $article['id_article'] ?>" class="btn btn-primary">
-    En savoir plus <i class="fa fa-arrow-right"></i>
-</a>
+                                        En savoir plus <i class="fa fa-arrow-right"></i>
+                                    </a>
 
                                 </div>
                             </div>
@@ -724,7 +726,7 @@ if (isset($_POST['add_favorite'])) {
     <!-- Template Javascript -->
     <!-- <script src="js/main.js"></script> -->
     <script src="../assets/js/main.js"></script>
- 
+
 </body>
 
 </html>
