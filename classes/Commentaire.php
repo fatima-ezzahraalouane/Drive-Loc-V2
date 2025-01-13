@@ -12,7 +12,7 @@ class Commentaire
     // Récupérer les commentaires par article
     public function getCommentsByArticle($articleId)
     {
-        $query = "SELECT c.contenu, c.date_creation, u.username 
+        $query = "SELECT c.id_commentaire, c.contenu, c.date_creation, c.id_user, u.username AS auteur
                   FROM commentaires c
                   JOIN usersite u ON c.id_user = u.id_user
                   WHERE c.id_article = :id_article
@@ -21,7 +21,8 @@ class Commentaire
         $stmt->bindParam(':id_article', $articleId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    }      
+    
     
 
     // Ajouter un commentaire
@@ -50,12 +51,13 @@ class Commentaire
             WHERE id_commentaire = :commentId AND id_user = :userId
         ";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
         $stmt->bindParam(':commentId', $commentId, PDO::PARAM_INT);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-        return $stmt->execute();
+    
+        return $stmt->execute(); // Retourne true si la mise à jour a réussi, sinon false
     }
-
+    
     // Supprimer un commentaire
     public function deleteComment($commentId, $userId)
     {

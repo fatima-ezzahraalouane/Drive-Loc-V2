@@ -433,14 +433,14 @@ class Article
             $stmtTags->execute();
             $article['tags'] = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
     
-            // Récupérer les commentaires associés avec l'auteur et la date
-            $queryComments = "
-                SELECT c.contenu, c.date_creation, u.username AS auteur
-                FROM commentaires c
-                LEFT JOIN usersite u ON c.id_user = u.id_user
-                WHERE c.id_article = :id
-                ORDER BY c.date_creation DESC
-            ";
+             // Récupérer les commentaires associés
+        $queryComments = "
+        SELECT c.id_commentaire, c.contenu, c.date_creation, c.id_user, u.username AS auteur
+        FROM commentaires c
+        LEFT JOIN usersite u ON c.id_user = u.id_user
+        WHERE c.id_article = :id
+        ORDER BY c.date_creation DESC
+        ";
             $stmtComments = $this->conn->prepare($queryComments);
             $stmtComments->bindParam(':id', $id, PDO::PARAM_INT);
             $stmtComments->execute();

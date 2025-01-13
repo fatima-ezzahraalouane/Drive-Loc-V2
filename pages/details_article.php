@@ -124,7 +124,10 @@ if (!$articleDetails) {
             <h3>Commentaires :</h3>
 
             <?php if (!empty($articleDetails['comments'])): ?>
+                <pre><?php print_r($articleDetails['comments']); ?></pre>
                 <?php foreach ($articleDetails['comments'] as $comment): ?>
+                    <pre><?php print_r($comment); ?></pre>
+
                     <div class="card mb-3">
                         <div class="card-body">
                             <h5 class="card-title">
@@ -134,6 +137,21 @@ if (!$articleDetails) {
                             <p class="text-muted mb-0" style="font-size: 0.9em;">
                                 <i class="fas fa-calendar-alt"></i> Posté le : <?= htmlspecialchars($comment['date_creation']) ?>
                             </p>
+                            <?php if (!empty($comment['id_user']) && $_SESSION['user_id'] == $comment['id_user']): ?>
+                                <div class="mt-3">
+        <form action="update_comment.php" method="POST" class="d-inline">
+        <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
+        <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
+            <button type="submit" class="btn btn-warning btn-sm">Modifier</button>
+        </form>
+        <form action="delete_comment.php" method="POST" class="d-inline">
+            <input type="hidden" name="comment_id" value="<?= htmlspecialchars($comment['id_commentaire']) ?>">
+            <input type="hidden" name="article_id" value="<?= htmlspecialchars($id_article) ?>">
+            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+        </form>
+    </div>
+<?php endif; ?>
+
                         </div>
                     </div>
                 <?php endforeach; ?>
