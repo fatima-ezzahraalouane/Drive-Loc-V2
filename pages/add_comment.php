@@ -1,30 +1,31 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 2) {
+    header('Location: signup.php');
+    exit();
+}
 require '../config/Database.php';
 require '../classes/Commentaire.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['article_id'], $_POST['comment_content'], $_SESSION['user_id'])) {
+    $articleId = intval($_POST['id_article']);
+    $userId = $_SESSION['user_id'];
+    $content = trim($_POST['comment']);
+
+    if (!empty($content)) {
         $database = new Database();
         $conn = $database->getConnection();
+
         $commentaire = new Commentaire($conn);
 
-        $articleId = intval($_POST['article_id']);
-        $userId = intval($_SESSION['user_id']);
-        $content = htmlspecialchars(trim($_POST['comment_content']));
-
-        if ($commentaire->addComment($articleId, $userId, $content)) {
-            echo json_encode(['success' => true]);
+        try {
+            $commentaire->addComment($articleId, $userId, $content);
+            header('Location: details_article.php?id=' . $articleId);
             exit();
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Erreur lors de l\'ajout du commentaire']);
-            exit();
+        } catch (Exception $e) {
+            echo 'Erreur : ' . $e->getMessage();
         }
     } else {
-        echo json_encode(['success' => false, 'error' => 'Données manquantes']);
-        exit();
+        echo 'Le contenu du commentaire ne peut pas être vide.';
     }
-} else {
-    echo json_encode(['success' => false, 'error' => 'Méthode non autorisée']);
-    exit();
 }
