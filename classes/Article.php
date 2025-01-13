@@ -403,4 +403,49 @@ class Article
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+    
+
+    public function getArticleById($id)
+{
+    $query = "
+        SELECT a.*, t.nom AS theme_nom, u.username AS user_name
+        FROM articles a
+        LEFT JOIN themes t ON a.id_theme = t.id_theme
+        LEFT JOIN usersite u ON a.id_user = u.id_user
+        WHERE a.id_article = :id
+    ";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $article = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($article) {
+        // Récupérer les tags associés
+        $queryTags = "
+            SELECT t.nom 
+            FROM tags t
+            INNER JOIN articles_tags at ON t.id_tag = at.id_tag
+            WHERE at.id_article = :id
+        ";
+        $stmtTags = $this->conn->prepare($queryTags);
+        $stmtTags->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmtTags->execute();
+        $article['tags'] = $stmtTags->fetchAll(PDO::FETCH_ASSOC);
+
+        // Récupérer les commentaires associés
+        $queryComments = "
+            SELECT c.contenu
+            FROM commentaires c
+            WHERE c.id_article = :id
+        ";
+        $stmtComments = $this->conn->prepare($queryComments);
+        $stmtComments->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmtComments->execute();
+        $article['comments'] = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    return $article;
+}
+
 }
