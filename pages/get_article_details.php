@@ -14,10 +14,13 @@ if (isset($_GET['id'])) {
     $conn = $database->getConnection();
 
     $article = new Article($conn);
-    $details = $article->getArticleById($articleId); // Implémente cette méthode dans ta classe Article
+    $details = $article->getArticleById($articleId);
+    $comments = $commentaire->getCommentsByArticle($articleId);
+    $details['comments'] = $comments;
     
     echo json_encode($details);
     exit();
+    
 }
 
 http_response_code(400);

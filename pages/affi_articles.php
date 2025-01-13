@@ -396,13 +396,10 @@ if (isset($_POST['add_favorite'])) {
                                     </div>
                                     <a href="#" class="h4 d-block mb-3"><?= htmlspecialchars($article['titre']) ?></a>
                                     <p class="mb-3"><?= substr(htmlspecialchars($article['contenu']), 0, 50) ?>...</p>
-                                    <button
-                                        class="btn btn-primary btn-details"
-                                        data-id="<?= $article['id_article'] ?>"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#articleModal">
-                                        En savoir plus <i class="fa fa-arrow-right"></i>
-                                    </button>
+                                    <a href="details_article.php?id=<?= $article['id_article'] ?>" class="btn btn-primary">
+    En savoir plus <i class="fa fa-arrow-right"></i>
+</a>
+
                                 </div>
                             </div>
                         </div>
@@ -671,21 +668,21 @@ if (isset($_POST['add_favorite'])) {
                     <div class="mt-4">
                         <h5>Commentaires</h5>
                         <div id="modalComments" class="mb-3">
-    <?php foreach ($comments as $comment): ?>
-        <p>
-            <strong><?= htmlspecialchars($comment['username']) ?></strong> - 
-            <small><?= htmlspecialchars($comment['date_creation']) ?></small><br>
-            <?= htmlspecialchars($comment['contenu']) ?>
-        </p>
-    <?php endforeach; ?>
-</div>
+                            <?php foreach ($comments as $comment): ?>
+                                <p>
+                                    <strong><?= htmlspecialchars($comment['username']) ?></strong> -
+                                    <small><?= htmlspecialchars($comment['date_creation']) ?></small><br>
+                                    <?= htmlspecialchars($comment['contenu']) ?>
+                                </p>
+                            <?php endforeach; ?>
+                        </div>
 
 
-<form method="POST" action="">
-    <input type="hidden" name="article_id" value="<?= htmlspecialchars($article['id_article']) ?>">
-    <textarea id="commentInput" name="comment_content" class="form-control mb-2" placeholder="Ajouter un commentaire..." required></textarea>
-    <button type="submit" name="add_comment" id="addCommentBtn" class="btn btn-primary">Ajouter</button>
-</form>
+                        <form method="POST" action="">
+                            <input type="hidden" name="article_id" value="<?= htmlspecialchars($article['id_article']) ?>">
+                            <textarea id="commentInput" name="comment_content" class="form-control mb-2" placeholder="Ajouter un commentaire..." required></textarea>
+                            <button type="submit" name="add_comment" id="addCommentBtn" class="btn btn-primary">Ajouter</button>
+                        </form>
 
 
 
@@ -727,45 +724,7 @@ if (isset($_POST['add_favorite'])) {
     <!-- Template Javascript -->
     <!-- <script src="js/main.js"></script> -->
     <script src="../assets/js/main.js"></script>
-    <script>
-        document.querySelectorAll('.btn-details').forEach(button => {
-            button.addEventListener('click', function() {
-                const articleId = this.dataset.id;
-
-                fetch(`get_article_details.php?id=${articleId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Remplir les champs de la modale
-                        document.getElementById('modalImage').src = data.image_url;
-                        document.getElementById('modalTitle').innerText = data.titre;
-                        document.getElementById('modalContent').innerText = data.contenu;
-                        document.getElementById('modalDate').querySelector('span').innerText = data.date_creation;
-                        document.getElementById('modalAuthor').querySelector('span').innerText = data.user_name;
-                        document.getElementById('modalTheme').querySelector('span').innerText = data.theme_nom;
-
-                        // Tags
-                        const tagsContainer = document.getElementById('modalTags');
-                        tagsContainer.innerHTML = '';
-                        data.tags.forEach(tag => {
-                            const tagElement = document.createElement('span');
-                            tagElement.className = 'badge bg-primary me-2';
-                            tagElement.innerText = tag.nom;
-                            tagsContainer.appendChild(tagElement);
-                        });
-
-                        // Commentaires
-                        const commentsContainer = document.getElementById('modalComments');
-                        commentsContainer.innerHTML = '';
-                        data.comments.forEach(comment => {
-                            const commentElement = document.createElement('p');
-                            commentElement.innerHTML = `<span><strong>${comment.user_name}</strong> - ${comment.date_creation}</span>${comment.contenu}`;
-                            commentsContainer.appendChild(commentElement);
-                        });
-                    })
-                    .catch(error => console.error('Erreur lors du chargement des données :', error));
-            });
-        });
-    </script>
+ 
 </body>
 
 </html>

@@ -12,22 +12,25 @@ class Commentaire
     // Récupérer les commentaires par article
     public function getCommentsByArticle($articleId)
     {
-        $query = "
-            SELECT c.id_commentaire, c.contenu, c.date_creation, u.username 
-            FROM {$this->table} c
-            INNER JOIN usersite u ON c.id_user = u.id_user
-            WHERE c.id_article = :articleId
-            ORDER BY c.date_creation DESC
-        ";
+        $query = "SELECT c.contenu, c.date_creation, u.username 
+                  FROM commentaires c
+                  JOIN usersite u ON c.id_user = u.id_user
+                  WHERE c.id_article = :id_article
+                  ORDER BY c.date_creation DESC";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':articleId', $articleId, PDO::PARAM_INT);
+        $stmt->bindParam(':id_article', $articleId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     // Ajouter un commentaire
     public function addComment($articleId, $userId, $content)
     {
+        if (!$articleId || !$userId || !$content) {
+            throw new InvalidArgumentException(message: "Les paramètres id_article, id_user ou contenu sont manquants.");
+        }
+    
         $query = "INSERT INTO {$this->table} (contenu, id_article, id_user) 
                   VALUES (:content, :articleId, :userId)";
         $stmt = $this->conn->prepare($query);
@@ -36,6 +39,7 @@ class Commentaire
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    
 
     // Modifier un commentaire
     public function updateComment($commentId, $userId, $content)
