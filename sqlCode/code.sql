@@ -96,6 +96,95 @@ INSERT INTO vehicule (modele, marque, prix_par_jour, disponibilite, id_categorie
 
 
 
+-- Vue SQL
+CREATE VIEW ListeVehicules AS
+SELECT 
+    v.id_vehicule,
+    v.modele,
+    v.marque,
+    v.prix_par_jour,
+    v.disponibilite,
+    v.imageUrl,
+    v.description,
+    v.km,
+    v.consom,
+    v.annee,
+    v.place,
+    c.nom AS categorie,
+    c.description AS categorie_description,
+    COALESCE(AVG(a.note), 0) AS note_moyenne,
+    COUNT(a.id_avis) AS nombre_avis
+FROM 
+    vehicule v
+LEFT JOIN 
+    categorie c ON v.id_categorie = c.id_categorie
+LEFT JOIN 
+    avis a ON v.id_vehicule = a.id_vehicule AND a.soft_delete = FALSE
+GROUP BY 
+    v.id_vehicule, c.nom, c.description;
+
+
+-- Procédure Stockée
+DELIMITER $$
+
+CREATE PROCEDURE AjouterReservation(
+    IN p_id_user INT,
+    IN p_id_vehicule INT,
+    IN p_date_rama DATE,
+    IN p_heure_rama TIME,
+    IN p_lieu_rama VARCHAR(250),
+    IN p_date_depo DATE,
+    IN p_heure_depo TIME,
+    IN p_lieu_depo VARCHAR(250)
+)
+BEGIN
+    -- Vérifier si le véhicule est disponible
+    IF EXISTS (
+        SELECT 1 
+        FROM reservations 
+        WHERE id_vehicule = p_id_vehicule
+          AND status = 'approuvée'
+          AND (
+                (p_date_rama BETWEEN date_rama AND date_depo) OR
+                (p_date_depo BETWEEN date_rama AND date_depo) OR
+                (p_date_rama <= date_rama AND p_date_depo >= date_depo)
+              )
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Le véhicule n''est pas disponible pour les dates sélectionnées.';
+    ELSE
+        -- Insérer la réservation
+        INSERT INTO reservations (
+            id_user,
+            id_vehicule,
+            date_rama,
+            heure_rama,
+            lieu_rama,
+            date_depo,
+            heure_depo,
+            lieu_depo
+        ) VALUES (
+            p_id_user,
+            p_id_vehicule,
+            p_date_rama,
+            p_heure_rama,
+            p_lieu_rama,
+            p_date_depo,
+            p_heure_depo,
+            p_lieu_depo
+        );
+
+        -- Mettre à jour la disponibilité du véhicule si nécessaire
+        UPDATE vehicule
+        SET disponibilite = FALSE
+        WHERE id_vehicule = p_id_vehicule;
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
 -- Les nouvelles tables pour la version 2 de Drive & Loc
 
 -- Table themes
