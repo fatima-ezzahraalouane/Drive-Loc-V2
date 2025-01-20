@@ -41,10 +41,13 @@ class Tag
     {
         $tagIds = [];
         foreach ($tags as $tagName) {
-            $tagIds[] = $this->createOrGetTag(trim($tagName));
+            if (!empty($tagName)) {
+                $tagIds[] = $this->createOrGetTag($tagName);
+            }
         }
-        return $tagIds;
+        return !empty($tagIds);
     }
+    
 
     public function linkTagToArticle($articleId, $tagId)
     {
@@ -100,4 +103,14 @@ class Tag
             return false;
         }
     }
+
+
+    public function addTag($nomTag)
+{
+    $query = "INSERT INTO tags (nom) VALUES (:nom)";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':nom', $nomTag, PDO::PARAM_STR);
+    return $stmt->execute();
+}
+
 }

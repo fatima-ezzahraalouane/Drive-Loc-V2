@@ -14,7 +14,7 @@ class Theme
         $this->conn = $db;
     }
 
-    public function createTheme()
+    public function addTheme()
     {
         try {
             $query = "INSERT INTO themes (nom, description, imgUrl) 

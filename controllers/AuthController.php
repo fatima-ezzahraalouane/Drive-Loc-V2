@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../pages/dashboard.php');
         } else {
             // Rediriger vers l'interface utilisateur
-            header('Location: ../pages/accueil.php');
+            header(header: 'Location: ../pages/accueil.php');
         }
         exit();
         // si des informations incorrects

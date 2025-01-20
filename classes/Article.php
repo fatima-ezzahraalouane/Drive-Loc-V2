@@ -450,5 +450,24 @@ class Article
         return $article;
     }
     
-
+    public function approveArticle($idArticle)
+    {
+        $query = "UPDATE articles SET statut = 'approuvé' WHERE id_article = :id_article";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_article', $idArticle, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    
+    public function getPendingArticles()
+    {
+        $query = "SELECT a.*, u.username AS user_name 
+                  FROM articles a
+                  JOIN usersite u ON a.id_user = u.id_user
+                  WHERE a.statut = 'en attente'
+                  ORDER BY a.date_creation DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }
